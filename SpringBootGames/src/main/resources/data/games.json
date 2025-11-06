@@ -118,4 +118,16 @@
   "preco" : 89.99,
   "titulo" : "Batman™: Arkham Knight",
   "vendas" : 4000000
+}, {
+  "anoLancamento" : 2025,
+  "classificacao" : "Livre",
+  "desenvolvedora" : "Team Cherry",
+  "genero" : "Metroidvania",
+  "id" : 11,
+  "imagem" : "https://upload.wikimedia.org/wikipedia/pt/8/86/Hollow_Knight_Silksong_cover.jpeg",
+  "nota" : 100.0,
+  "plataforma" : "Steam",
+  "preco" : 60.0,
+  "titulo" : "Hollow Knight Silksong",
+  "vendas" : 10000000
 } ]
