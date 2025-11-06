@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "titulo": "Hollow Knight",
+    "desenvolvedora": "Team Cherry",
+    "genero": "Metroidvania",
+    "plataforma": "Steam",
+    "anoLancamento": 2017,
+    "preco": 46.99,
+    "classificacao": "Livre",
+    "nota": 100,
+    "vendas": 30000000
+  }
+]
