@@ -2,15 +2,16 @@ package br.com.fecaf.model;
 
 public class Game {
     //-id, -titulo, -desenvolvedora, -genero, -plataforma, -anoLancamento, -preco, -classificacao, -nota, -vendas
-    private int id,  vendas, anoLancamento;
+    private int vendas, anoLancamento;
+    private Long id;
     private double preco, nota;
-    private String titulo, genero, plataforma, desenvolvedora, classificacao;
+    private String titulo, genero, plataforma, desenvolvedora, classificacao, imagem;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -85,4 +86,28 @@ public class Game {
     public void setDesenvolvedora(String desenvolvedora) {
         this.desenvolvedora = desenvolvedora;
     }
+
+    public String getImagem() {
+        return imagem;
+    }
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "id=" + id +
+                ", titulo='" + titulo + '\'' +
+                ", desenvolvedora='" + desenvolvedora + '\'' +
+                ", genero='" + genero + '\'' +
+                ", plataforma='" + plataforma + '\'' +
+                ", anoLancamento=" + anoLancamento +
+                ", preco=" + preco +
+                ", classificacao='" + classificacao + '\'' +
+                ", nota=" + nota +
+                ", vendas=" + vendas +
+                '}';
+    }
+
 }

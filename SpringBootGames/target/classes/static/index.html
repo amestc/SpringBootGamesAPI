@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Games API CRUD</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <style>
+        body { background:#21232c; margin:0; font-family:"Segoe UI", Arial, sans-serif;}
+        .container {max-width:1020px; margin:32px auto; background:#fff; border-radius:14px; padding:32px;}
+        h2 { margin-top:0; color: #334; font-weight:400;}
+        .form-row {display: flex; flex-wrap: wrap; gap:10px;}
+        .form-row input {
+            padding:7px; border:1px solid #ccc; border-radius:6px; font-size:15px;
+            margin-bottom:7px; background:#fafafa; width:150px;
+        }
+        .form-row input[type="url"] { width:220px; }
+        .form-row button { padding:8px 22px; border-radius:7px; border:none; background:#3143f5; color:#fff; font-size:16px;}
+        .cards { display:grid; grid-template-columns:repeat(auto-fit, minmax(315px,1fr)); gap:18px; margin-top:36px;}
+        .card {background:#fbfbfd; padding:24px; border-radius:12px; box-shadow:0 2px 14px rgba(51,51,84,0.08);}
+        .card img {display:block; width:92px; height:92px; object-fit:cover; border-radius:8px; margin-bottom:12px;}
+        .card-items { display:grid; grid-template-columns:1fr 1fr; gap:10px 8px;}
+        .card input { font-size:13px; width:98%; background:#f4f6fe; border-radius:4px; border:1px solid #e9eaea; margin-bottom:5px; padding:4px;}
+        .card input[readonly] { background:#f6f7fa; color:#888; }
+        .card-actions { margin-top:12px;}
+        .card-actions button {padding:5px 18px; border-radius:5px; border:none; margin-right:7px; font-size:15px;}
+        .card-actions .edit { background:#334; color:#fff;}
+        .card-actions .save { background:#4fa834; color:#fff;}
+        .card-actions .delete { background:#c82a2a; color:#fff;}
+        .card .id-label {font-size:12px; color:#777; margin-bottom:7px;}
+        .imagem-url-label { font-size:11px; color:#444; margin-top:2px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Games CRUD Dashboard</h2>
+    <form id="addGameForm">
+        <div class="form-row">
+            <input type="text" id="titulo" placeholder="Título" required>
+            <input type="text" id="desenvolvedora" placeholder="Desenvolvedora" required>
+            <input type="text" id="genero" placeholder="Gênero" required>
+            <input type="text" id="plataforma" placeholder="Plataforma" required>
+            <input type="number" id="anoLancamento" placeholder="Ano lançamento" required>
+            <input type="number" id="preco" step="0.01" placeholder="Preço" required>
+            <input type="text" id="classificacao" placeholder="Classificação" required>
+            <input type="number" id="nota" step="0.1" placeholder="Nota" required>
+            <input type="number" id="vendas" placeholder="Vendas" required>
+            <input type="url" id="imagem" placeholder="URL da imagem / caminho" required>
+            <button type="submit">Adicionar Jogo</button>
+        </div>
+    </form>
+    <div class="cards" id="gamesCards"></div>
+</div>
+<script>
+    const apiUrl = '/api/v1/Games';
+
+    document.addEventListener('DOMContentLoaded', fetchGames);
+
+    document.getElementById('addGameForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const novoJogo = {
+            titulo: document.getElementById('titulo').value,
+            desenvolvedora: document.getElementById('desenvolvedora').value,
+            genero: document.getElementById('genero').value,
+            plataforma: document.getElementById('plataforma').value,
+            anoLancamento: Number(document.getElementById('anoLancamento').value),
+            preco: Number(document.getElementById('preco').value),
+            classificacao: document.getElementById('classificacao').value,
+            nota: Number(document.getElementById('nota').value),
+            vendas: Number(document.getElementById('vendas').value),
+            imagem: document.getElementById('imagem').value
+        };
+        await fetch(apiUrl, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(novoJogo)
+        });
+        this.reset();
+        fetchGames();
+    });
+
+    // Renderiza cards dos jogos
+    async function fetchGames() {
+        const resp = await fetch(apiUrl);
+        const games = await resp.json();
+        const cards = document.getElementById('gamesCards');
+        cards.innerHTML = '';
+        games.forEach(game => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            // readonly por padrão
+            div.innerHTML = `
+                <span class="id-label">#${game.id}</span>
+                <img src="${game.imagem || 'https://via.placeholder.com/92x92?text=No+Img'}" alt="Capa">
+                <div class="card-items">
+                    <input type="text" value="${game.titulo}" id="titulo_${game.id}" placeholder="Título" readonly>
+                    <input type="text" value="${game.desenvolvedora}" id="desenvolvedora_${game.id}" placeholder="Desenvolvedora" readonly>
+                    <input type="text" value="${game.genero}" id="genero_${game.id}" placeholder="Gênero" readonly>
+                    <input type="text" value="${game.plataforma}" id="plataforma_${game.id}" placeholder="Plataforma" readonly>
+                    <input type="number" value="${game.anoLancamento}" id="anoLancamento_${game.id}" placeholder="Ano lançamento" readonly>
+                    <input type="number" value="${game.preco}" id="preco_${game.id}" step="0.01" placeholder="Preço" readonly>
+                    <input type="text" value="${game.classificacao}" id="classificacao_${game.id}" placeholder="Classificação" readonly>
+                    <input type="number" value="${game.nota}" id="nota_${game.id}" step="0.1" placeholder="Nota" readonly>
+                    <input type="number" value="${game.vendas}" id="vendas_${game.id}" placeholder="Vendas" readonly>
+                </div>
+                <div id="imagemField_${game.id}" style="display:none;">
+                    <input type="url" value="${game.imagem || ''}" id="imagem_${game.id}" placeholder="URL/caminho imagem">
+                    <span class="imagem-url-label">URL da imagem do jogo</span>
+                </div>
+                <div class="card-actions">
+                    <button class="edit" onclick="enableEdit(${game.id}, this)">Editar</button>
+                    <button class="delete" onclick="deleteGame(${game.id})">Excluir</button>
+                </div>
+            `;
+            cards.appendChild(div);
+        });
+    }
+
+    // Ativa edição do card
+    window.enableEdit = function(id, btn) {
+        [
+            'titulo','desenvolvedora','genero','plataforma','anoLancamento','preco',
+            'classificacao','nota','vendas'
+        ].forEach(field => {
+            document.getElementById(`${field}_${id}`).removeAttribute('readonly');
+        });
+        // Exibe campo da url da imagem
+        document.getElementById(`imagemField_${id}`).style.display = "block";
+        // Se não existir input, cria input url
+        if (!document.getElementById(`imagem_${id}`)) {
+            const imagemDiv = document.createElement('div');
+            imagemDiv.id = `imagemField_${id}`;
+            imagemDiv.innerHTML = `
+                <input type="url" value="" id="imagem_${id}" placeholder="URL/caminho imagem">
+                <span class="imagem-url-label">URL da imagem do jogo</span>
+            `;
+            document.querySelector(`#gamesCards .card:nth-child(${id})`).appendChild(imagemDiv);
+        }
+        // Troca botão Editar por Salvar
+        btn.textContent = "Salvar";
+        btn.classList.remove("edit");
+        btn.classList.add("save");
+        btn.onclick = function() { updateGame(id, btn); };
+    };
+
+    // Salva edição e volta para readonly
+    window.updateGame = async function(id, btn) {
+        const jogoAtualizado = {
+            id: id,
+            titulo: document.getElementById(`titulo_${id}`).value,
+            desenvolvedora: document.getElementById(`desenvolvedora_${id}`).value,
+            genero: document.getElementById(`genero_${id}`).value,
+            plataforma: document.getElementById(`plataforma_${id}`).value,
+            anoLancamento: Number(document.getElementById(`anoLancamento_${id}`).value),
+            preco: Number(document.getElementById(`preco_${id}`).value),
+            classificacao: document.getElementById(`classificacao_${id}`).value,
+            nota: Number(document.getElementById(`nota_${id}`).value),
+            vendas: Number(document.getElementById(`vendas_${id}`).value),
+            imagem: document.getElementById(`imagem_${id}`).value
+        };
+        await fetch(`${apiUrl}/${id}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(jogoAtualizado)
+        });
+        // Volta inputs para readonly
+        [
+            'titulo','desenvolvedora','genero','plataforma','anoLancamento','preco',
+            'classificacao','nota','vendas'
+        ].forEach(field => {
+            document.getElementById(`${field}_${id}`).setAttribute('readonly', true);
+        });
+        document.getElementById(`imagemField_${id}`).style.display = "none";
+        // Volta o botão para Editar
+        btn.textContent = "Editar";
+        btn.classList.remove("save");
+        btn.classList.add("edit");
+        btn.onclick = function() { enableEdit(id, btn); };
+        fetchGames(); // Atualiza a interface com info nova
+    };
+
+    window.deleteGame = async function(id) {
+        await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+        fetchGames();
+    };
+</script>
+</body>
+</html>
