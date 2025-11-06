@@ -40,7 +40,7 @@ Cada jogo é representado por um objeto com os seguintes atributos:
 
 ### 1. Pré-requisitos
 
-- Java JDK 17 ou superior
+- Java JDK 21
 - Maven instalado
 
 ### 2. Clone o repositório  
